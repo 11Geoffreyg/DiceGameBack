@@ -32,7 +32,7 @@ def analyse_bonus_score(dice_value_occurrence_list, player):
             else:
                 bonus_multiplier = STD_BONUS_MULTIPLIER
 
-            player['bonus'] += 1
+            player['bonus'] += nb_of_bonus
             score += nb_of_bonus * bonus_multiplier * (side_value_index + 1)
 
             # Stores dices left to play not used in bonus
@@ -110,6 +110,7 @@ def manage_players():
             'rolls': 0,
             'bonus': 0,
             'lost_points': 0,
+            'no_point_turn': 0,
             'has_won': False,
             'full_rolls': 0
         }
@@ -154,7 +155,7 @@ def player_turn(players):
         nb_dices = DEFAULT_DICES_NB
 
         while wanna_play:
-            input('\n-- ' + players[id]['name'] + ' ready ?')
+            input('\n-- ' + players[id]['name'] + ', enter to throw dices.')
             dice_value_occurrence_list = roll_dice_set(nb_dices)
             [roll_score, dice_value_occurrence_list, scoring_dices] = analyse_score(dice_value_occurrence_list, players[id])
             [can_play, nb_dices] = can_player_continue(dice_value_occurrence_list, roll_score)
@@ -168,6 +169,7 @@ def player_turn(players):
         # Manage points if lost
         if roll_score == 0:
             players[id]['lost_points'] += player_turn_score
+            players[id]['no_point_turn'] += 1
             max_loss = [player_turn_score, players[id]['name']] if is_max(player_turn_score, max_loss[0]) else max_loss
             player_turn_score = 0
         else:
@@ -192,19 +194,34 @@ def players_rank(players):
     return players
 
 
-def show_stats(players):
+def show_stats(players, total_turns_game):
+    total_score_game = 0
+    total_rolls_game = 0
+    total_lost_points = 0
+    total_no_point_turns = 0
+
     for id in players:
-        has_won = 'lose'
-        if players[id]['has_won']:
-            has_won = 'win'
+        has_won = 'win' if players[id]['has_won'] else 'lose'
+
+        # displays for cmd
         print(players[id]['name'] + ' ' +
               has_won + ' ! Scoring ' +
               str(players[id]['score']) + ' in ' +
-              str(players[id]['rolls']) + ' with ' +
+              str(players[id]['rolls']) + ' roll(s) with ' +
               str(players[id]['full_rolls']) + ' full roll. ' +
               str(players[id]['bonus']) + ' bonus and ' +
               str(players[id]['lost_points']) + ' potential points lost.')
 
+        total_score_game += players[id]['score']
+        total_rolls_game += players[id]['rolls']
+        total_lost_points += players[id]['lost_points']
+        total_no_point_turns += players[id]['no_point_turn']
+
+    mean_total_score_game = round((total_score_game / len(players) / total_turns_game), 2)
+    mean_total_lost_point = round((total_lost_points / total_no_point_turns), 2) if total_no_point_turns else 0
+
+    # displays general stats for cmd
+    print('Mean scoring turn : ' + str(mean_total_score_game) + ' (' + str(total_turns_game) + ' turn(s)) \n Mean non scoring turn : ' + str(mean_total_lost_point) + ' (' + str(total_no_point_turns) + ' turn(s))')
     return
 
 
@@ -221,9 +238,8 @@ def play():
     players = players_rank(players)
 
     print('\n Game in : ', turn_count, ' turns.')
-    show_stats(players)
+    show_stats(players, turn_count)
     print(max_score, max_loss, max_rolls_in_turn)
-
 
 # Init Game
 play()
