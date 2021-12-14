@@ -107,7 +107,8 @@ def manage_players():
             'rolls': 0,
             'bonus': 0,
             'lost_points': 0,
-            'has_won': False
+            'has_won': False,
+            'full_rolls': 0
         }
         nb_player = nb_player + 1
 
@@ -125,6 +126,12 @@ def turn_counter(turn_count):
     return turn_count
 
 
+def is_full_role(can_play, score):
+    if not can_play and score > 0:
+        return 1
+    return 0
+
+
 def player_turn(players):
     player_iteration = 0
     nb_dices = DEFAULT_DICES_NB
@@ -137,9 +144,9 @@ def player_turn(players):
         while wanna_play:
             input('\n-- ' + players[id]['name'] + ' ready ?')
             dice_value_occurrence_list = roll_dice_set(nb_dices, players[id])
-            [roll_score, dice_value_occurrence_list, scoring_dices] = analyse_score(dice_value_occurrence_list,
-                                                                                    players[id])
+            [roll_score, dice_value_occurrence_list, scoring_dices] = analyse_score(dice_value_occurrence_list, players[id])
             [can_play, nb_dices] = can_player_continue(dice_value_occurrence_list, roll_score)
+            full_roll = is_full_role(can_play, roll_score)
             print('Scoring dices : ', scoring_dices, '. You have potentially ', roll_score, ' points. You have : ',
                   str(nb_dices), ' dice(s) left to throw.')
 
@@ -151,6 +158,7 @@ def player_turn(players):
             wanna_play = does_player_continue(can_play)
 
         players[id]['score'] += player_turn_score
+        players[id]['full_rolls'] += full_roll
         players[id]['has_won'] = has_player_won(players[id]['score'])
 
         player_iteration = player_iteration + 1
@@ -175,7 +183,8 @@ def show_stats(players):
         print(players[id]['name'] + ' ' +
               has_won + ' ! Scoring ' +
               str(players[id]['score']) + ' in ' +
-              str(players[id]['rolls']) + ' with 1 full roll. ' +
+              str(players[id]['rolls']) + ' with ' +
+              str(players[id]['full_rolls']) + ' full roll. ' +
               str(players[id]['bonus']) + ' bonus and ' +
               str(players[id]['lost_points']) + ' potential points lost.')
 
