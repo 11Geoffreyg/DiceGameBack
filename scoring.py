@@ -8,7 +8,7 @@ DEFAULT_DICES_NB = 5
 THRESHOLD_BONUS = 3  # Threshold of the triggering for bonus in term of occurrence of the same slide value
 STD_BONUS_MULTIPLIER = 100  # Standard multiplier for bonus
 ACE_BONUS_MULTIPLIER = 1000  # Special multiplier for aces bonus
-DEFAULT_WINNING_SCORE = 2000
+DEFAULT_WINNING_SCORE = 200
 
 
 # return a list of dices value occurrence for a roll of nb_dice_to_roll dices
@@ -135,7 +135,7 @@ def player_turn(players):
         player_turn_score = 0
 
         while wanna_play:
-            input(players[id]['name'] + ' ready ?')
+            input('\n-- ' + players[id]['name'] + ' ready ?')
             dice_value_occurrence_list = roll_dice_set(nb_dices, players[id])
             [roll_score, dice_value_occurrence_list, scoring_dices] = analyse_score(dice_value_occurrence_list,
                                                                                     players[id])
@@ -162,15 +162,40 @@ def player_turn(players):
     return has_won, players
 
 
+def players_rank(players):
+    players = {k: v for k, v in sorted(players.items(), key=lambda item: item[1]['score'], reverse=True)}
+    return players
+
+
+def show_stats(players):
+    for id in players:
+        has_won = 'lose'
+        if players[id]['has_won']:
+            has_won = 'win'
+        print(players[id]['name'] + ' ' +
+              has_won + ' ! Scoring ' +
+              str(players[id]['score']) + ' in ' +
+              str(players[id]['rolls']) + ' with 1 full roll. ' +
+              str(players[id]['bonus']) + ' bonus and ' +
+              str(players[id]['lost_points']) + ' potential points lost.')
+
+    return
+
+
 # Manage Game
 def play():
     players = manage_players()
     has_won = False
+    turn_count = 0
 
     while not has_won:
+        turn_count = turn_counter(turn_count)
         has_won, players = player_turn(players)
 
-    print('Stats : ', players)
+    players = players_rank(players)
+
+    print('\n Game in : ', turn_count, ' turns.')
+    show_stats(players)
 
 
 # Init Game
