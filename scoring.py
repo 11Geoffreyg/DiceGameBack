@@ -12,13 +12,12 @@ DEFAULT_WINNING_SCORE = 200
 
 
 # return a list of dices value occurrence for a roll of nb_dice_to_roll dices
-def roll_dice_set(nb_dice_to_roll, player):
+def roll_dice_set(nb_dice_to_roll):
     dice_value_occurrence_list = [0] * NB_DICE_SIDE
     for n in range(nb_dice_to_roll):
         dice_value = random.randint(1, NB_DICE_SIDE)
         dice_value_occurrence_list[dice_value - 1] += 1
 
-    player['rolls'] += 1
     return dice_value_occurrence_list
 
 
@@ -35,9 +34,13 @@ def analyse_bonus_score(dice_value_occurrence_list, player):
 
             player['bonus'] += 1
             score += nb_of_bonus * bonus_multiplier * (side_value_index + 1)
-            dices_left = dice_value_occurrence_list[side_value_index] % THRESHOLD_BONUS
-            nb_scoring_dices = dice_value_occurrence_list[side_value_index] - dices_left
+
+            # Stores dices left to play not used in bonus
+            dices_left = dice_value_occurrence % THRESHOLD_BONUS
             dice_value_occurrence_list[side_value_index] = dices_left
+
+            # Store scoring dices
+            nb_scoring_dices = dice_value_occurrence - dices_left
             scoring_dices.append([side_value_index + 1, nb_scoring_dices])
 
     return score, dice_value_occurrence_list, scoring_dices
@@ -132,42 +135,56 @@ def is_full_role(can_play, score):
     return 0
 
 
+def is_max(number, prev_max):
+    if number > prev_max:
+        return True
+    return False
+
+
 def player_turn(players):
-    player_iteration = 0
-    nb_dices = DEFAULT_DICES_NB
     has_won = False
+    max_score = [0, 'no one']
+    max_loss = [0, 'no one']
+    max_rolls_in_turn = [0, 'no one']
 
     for id in players:
         wanna_play = True
         player_turn_score = 0
+        rolls_count_in_turn = 0
+        nb_dices = DEFAULT_DICES_NB
 
         while wanna_play:
             input('\n-- ' + players[id]['name'] + ' ready ?')
-            dice_value_occurrence_list = roll_dice_set(nb_dices, players[id])
+            dice_value_occurrence_list = roll_dice_set(nb_dices)
             [roll_score, dice_value_occurrence_list, scoring_dices] = analyse_score(dice_value_occurrence_list, players[id])
             [can_play, nb_dices] = can_player_continue(dice_value_occurrence_list, roll_score)
             full_roll = is_full_role(can_play, roll_score)
-            print('Scoring dices : ', scoring_dices, '. You have potentially ', roll_score, ' points. You have : ',
-                  str(nb_dices), ' dice(s) left to throw.')
+            print('Scoring dices : ', scoring_dices, '. You have potentially ', roll_score, ' points. You have : ', str(nb_dices), ' dice(s) left to throw.')
 
             player_turn_score += roll_score
-            if roll_score == 0:
-                players[id]['lost_points'] += player_turn_score
-                player_turn_score = 0
-
             wanna_play = does_player_continue(can_play)
+            rolls_count_in_turn += 1
 
+        # Manage points if lost
+        if roll_score == 0:
+            players[id]['lost_points'] += player_turn_score
+            max_loss = [player_turn_score, players[id]['name']] if is_max(player_turn_score, max_loss[0]) else max_loss
+            player_turn_score = 0
+        else:
+            max_score = [player_turn_score, players[id]['name']] if is_max(player_turn_score, max_score[0]) else max_score
+
+        max_rolls_in_turn = [rolls_count_in_turn, players[id]['name']] if is_max(rolls_count_in_turn, max_rolls_in_turn[0]) else max_rolls_in_turn
+
+        # Store player infos
         players[id]['score'] += player_turn_score
         players[id]['full_rolls'] += full_roll
         players[id]['has_won'] = has_player_won(players[id]['score'])
-
-        player_iteration = player_iteration + 1
-        nb_dices = DEFAULT_DICES_NB
+        players[id]['rolls'] += rolls_count_in_turn
 
         if players[id]['has_won']:
             has_won = True
 
-    return has_won, players
+    return has_won, max_score, max_loss, max_rolls_in_turn, players
 
 
 def players_rank(players):
@@ -199,12 +216,13 @@ def play():
 
     while not has_won:
         turn_count = turn_counter(turn_count)
-        has_won, players = player_turn(players)
+        has_won, max_score, max_loss, max_rolls_in_turn, players = player_turn(players)
 
     players = players_rank(players)
 
     print('\n Game in : ', turn_count, ' turns.')
     show_stats(players)
+    print(max_score, max_loss, max_rolls_in_turn)
 
 
 # Init Game
