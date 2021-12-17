@@ -72,16 +72,13 @@ def analyse_score(dice_value_occurrence_list, player):
     return bonus_score + standard_score, dice_value_occurrence_list, scoring_dices, bonus_count
 
 
-def can_player_continue(dice_value_occurrence_list, score):
-    nb_dices_left = 0
+def nb_dices_left(dice_value_occurrence_list):
+    nb_dices_left_to_play = 0
 
     for n in dice_value_occurrence_list:
-        nb_dices_left += n
+        nb_dices_left_to_play += n
 
-    if nb_dices_left == 0 or score == 0:
-        return False, 0
-
-    return True, nb_dices_left
+    return nb_dices_left_to_play
 
 
 def does_player_continue(can_play):
@@ -188,7 +185,8 @@ def player_roll(player, nb_dices, player_turn_score, bonus_turn_count, rolls_cou
     # Game progress : throw dices and get scores
     dice_value_occurrence_list = roll_dice_set(nb_dices)
     roll_score, dice_value_occurrence_list, scoring_dices, bonus_count = analyse_score(dice_value_occurrence_list, player)
-    can_play, nb_dices = can_player_continue(dice_value_occurrence_list, roll_score)
+    nb_dices = nb_dices_left(dice_value_occurrence_list)
+    can_play = nb_dices_left != 0 and roll_score != 0
     full_roll = is_full_role(can_play, roll_score)
     player_turn_score += roll_score
 
