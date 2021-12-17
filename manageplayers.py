@@ -32,6 +32,7 @@ def does_player_continue(can_play):
 
 
 def players_rank(players):
+    # orders the table players thanks to players score
     players = {k: v for k, v in sorted(players.items(), key=lambda item: item[1]['score'], reverse=True)}
     return players
 

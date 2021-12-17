@@ -150,7 +150,7 @@ def play():
         has_won, stats, players = game_turn(players, stats)
 
     players = manageplayers.players_rank(players)
-    stats = calculate_game_stats(players, stats, turn_count)
+    stats = scoring.compute_game_stats(players, stats, turn_count)
     show_stats(players, stats, turn_count)
 
 

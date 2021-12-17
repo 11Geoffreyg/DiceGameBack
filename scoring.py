@@ -90,7 +90,7 @@ def game_stats():
     }
 
 
-def calculate_game_stats(players, stats, total_turns_game):
+def compute_game_stats(players, stats, total_turns_game):
     total_score_game = 0
     total_rolls_game = 0
     total_lost_points = 0
