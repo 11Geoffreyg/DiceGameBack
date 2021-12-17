@@ -12,4 +12,5 @@ os.environ['ACE_BONUS_MULTIPLIER'] = 1000 # Special multiplier for aces bonus
 
 os.environ['DEFAULT_WINNING_SCORE'] = 200
 
-
+os.environ["HOST_NAME"] = "localhost"
+os.environ["PORT"] = "8000"
