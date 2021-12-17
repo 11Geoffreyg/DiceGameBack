@@ -141,9 +141,7 @@ def game_stats():
 
 
 def has_player_won(score):
-    if score >= DEFAULT_WINNING_SCORE:
-        return True
-    return False
+    return score >= DEFAULT_WINNING_SCORE
 
 
 def turn_counter(turn_count):
@@ -158,14 +156,11 @@ def is_full_role(can_play, score):
 
 
 def is_max(number, prev_max):
-    if number > prev_max:
-        return True
-    return False
+    return number > prev_max
 
 
 def player_turn(players, game_stats):
     has_won = False
-    max_score = max_loss = max_rolls_in_turn = [0, 'no one']
 
     for id in players:
         wanna_play = True
@@ -266,7 +261,6 @@ def show_stats(players, game_stats, total_turns_game):
     print('\n Max score in one turn : ' + str(game_stats['max_turn_score']['score']) + ' by ' + game_stats['max_turn_score']['player'])
     print('Max loss in one turn : ' + str(game_stats['max_turn_loss']['score']) + ' by ' + game_stats['max_turn_loss']['player'])
     print('Longest turn : ' + str(game_stats['longest_turn']['count']) + ' by ' + game_stats['longest_turn']['player'])
-    return
 
 
 # Manage Game
