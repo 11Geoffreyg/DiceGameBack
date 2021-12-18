@@ -8,10 +8,6 @@ DEFAULT_WINNING_SCORE = 200
 def has_player_won(score):
     return score >= DEFAULT_WINNING_SCORE
 
-def is_max(number, prev_max):
-    return number > prev_max
-
-
 def game_turn(players, game_stats):
     has_won = False
 
@@ -62,20 +58,20 @@ def player_roll(player, nb_dices, player_turn_score, bonus_turn_count, rolls_cou
         player['no_point_turn'] += 1
         game_stats['total_no_points_turn'] += 1
 
-        if is_max(player_turn_score, game_stats['max_turn_loss']['score']):
+        if player_turn_score > game_stats['max_turn_loss']['score']:
             game_stats['max_turn_loss'] = {
                 'score': player_turn_score,
                 'player': player['name']
             }
         player_turn_score = 0
     else:
-        if is_max(player_turn_score, game_stats['max_turn_score']['score']):
+        if player_turn_score > game_stats['max_turn_score']['score']:
             game_stats['max_turn_score'] = {
                 'score': player_turn_score,
                 'player': player['name']
             }
 
-    if is_max(rolls_count_in_turn, game_stats['longest_turn']['count']):
+    if rolls_count_in_turn > game_stats['longest_turn']['count']:
         game_stats['longest_turn'] = {
             'count': rolls_count_in_turn,
             'player': player['name']
