@@ -8,18 +8,6 @@ DEFAULT_WINNING_SCORE = 200
 def has_player_won(score):
     return score >= DEFAULT_WINNING_SCORE
 
-
-def turn_counter(turn_count):
-    turn_count += 1
-    return turn_count
-
-
-def is_full_role(can_play, score):
-    if not can_play and score > 0:
-        return 1
-    return 0
-
-
 def is_max(number, prev_max):
     return number > prev_max
 
@@ -34,13 +22,13 @@ def game_turn(players, game_stats):
         nb_dices = DEFAULT_DICES_NB
 
         while wanna_play:
-            wanna_play, player_turn_score, bonus_turn_count, nb_dices, full_roll, rolls_count_in_turn, game_stats = \
+            wanna_play, player_turn_score, bonus_turn_count, nb_dices, is_full_roll, rolls_count_in_turn, game_stats = \
                 player_roll(players[id], nb_dices, player_turn_score, bonus_turn_count, rolls_count_in_turn, game_stats)
 
         # Store player infos
         players[id]['bonus'] += bonus_turn_count
         players[id]['score'] += player_turn_score
-        players[id]['full_rolls'] += full_roll
+        players[id]['full_rolls'] += 1 if is_full_roll else 0
         players[id]['has_won'] = has_player_won(players[id]['score'])
         players[id]['rolls'] += rolls_count_in_turn
 
@@ -58,7 +46,7 @@ def player_roll(player, nb_dices, player_turn_score, bonus_turn_count, rolls_cou
     roll_score, dice_value_occurrence_list, scoring_dices, bonus_count = scoring.analyse_score(dice_value_occurrence_list, player)
     nb_dices = sum(dice_value_occurrence_list)
     can_play = nb_dices != 0 and roll_score != 0
-    full_roll = is_full_role(can_play, roll_score)
+    is_full_roll = not can_play and roll_score > 0
     player_turn_score += roll_score
 
     print('Scoring dices : ', scoring_dices, 'Scoring : ', roll_score, '. You have potentially ', player_turn_score,
@@ -93,7 +81,7 @@ def player_roll(player, nb_dices, player_turn_score, bonus_turn_count, rolls_cou
             'player': player['name']
         }
 
-    return wanna_play, player_turn_score, bonus_turn_count, nb_dices, full_roll, rolls_count_in_turn, game_stats
+    return wanna_play, player_turn_score, bonus_turn_count, nb_dices, is_full_roll, rolls_count_in_turn, game_stats
 
 
 def calculate_game_stats(players, stats, total_turns_game):
@@ -146,7 +134,7 @@ def play():
     turn_count = 0
 
     while not has_won:
-        turn_count = turn_counter(turn_count)
+        turn_count += 1
         has_won, stats, players = game_turn(players, stats)
 
     players = manageplayers.players_rank(players)
