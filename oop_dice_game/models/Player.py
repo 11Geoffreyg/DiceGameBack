@@ -2,7 +2,6 @@ class Player:
     def __init__(self, name):
         self._name = name
         self._score = 0
-        self._has_won = False
         self._bonus_count = 0
         self._lost_point = 0
         self._roll_count = 0
@@ -15,16 +14,6 @@ class Player:
     @name.setter   
     def name(self, value):
         self._name = value
-
-
-    @property
-    def has_won(self) -> bool:
-        return self._has_won
-
-    @has_won.setter   
-    def has_won(self, value):
-        self._has_won = value
-
 
     @property
     def score(self) -> int:

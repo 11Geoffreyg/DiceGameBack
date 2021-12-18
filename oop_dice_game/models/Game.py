@@ -6,6 +6,7 @@ class Game:
         self._total_lost_points = 0
         self._total_no_point_turns = 0
         self._total_score_game = 0
+        self._winner = {}
         self._settings = {}
         self._stats = {}
 
