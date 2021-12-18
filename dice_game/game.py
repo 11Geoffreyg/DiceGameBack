@@ -9,7 +9,7 @@ def has_player_won(score):
     return score >= DEFAULT_WINNING_SCORE
 
 def game_turn(players, game_stats):
-    has_won = False
+    is_there_a_winner = False
 
     # every player turn
     for id in players:
@@ -29,9 +29,9 @@ def game_turn(players, game_stats):
         players[id]['rolls'] += rolls_count_in_turn
 
         if players[id]['has_won']:
-            has_won = True
+            is_there_a_winner = True
 
-    return has_won, game_stats, players
+    return is_there_a_winner, game_stats, players
 
 
 def player_roll(player, nb_dices, player_turn_score, bonus_turn_count, rolls_count_in_turn, game_stats):
@@ -79,32 +79,15 @@ def player_roll(player, nb_dices, player_turn_score, bonus_turn_count, rolls_cou
 
     return wanna_play, player_turn_score, bonus_turn_count, nb_dices, is_full_roll, rolls_count_in_turn, game_stats
 
-
-def calculate_game_stats(players, stats, total_turns_game):
-    total_score_game = 0
-    total_rolls_game = 0
-    total_lost_points = 0
-
-    for id in players:
-        total_score_game += players[id]['score']
-        total_rolls_game += players[id]['rolls']
-        total_lost_points += players[id]['lost_points']
-
-    stats['mean_scoring_turn'] = round((total_score_game / len(players) / total_turns_game), 2)
-    stats['mean_non_scoring_turn'] = round((total_lost_points / stats['total_no_points_turn']), 2) if stats['total_no_points_turn'] else 0
-
-    return stats
-
-
 def show_stats(players, game_stats, total_turns_game):
     print('\n Game in : ', total_turns_game, ' turns. ')
 
     for id in players:
-        has_won = 'win' if players[id]['has_won'] else 'lose'
+        player_status = 'win' if players[id]['has_won'] else 'lose'
 
         # displays for cmd
         print(players[id]['name'] + ' ' +
-              has_won + ' ! Scoring ' +
+              player_status + ' ! Scoring ' +
               str(players[id]['score']) + ' in ' +
               str(players[id]['rolls']) + ' roll(s) with ' +
               str(players[id]['full_rolls']) + ' full roll. ' +
@@ -126,12 +109,12 @@ def show_stats(players, game_stats, total_turns_game):
 def play():
     players = manageplayers.init_players()
     stats = scoring.game_stats()
-    has_won = False
+    is_there_a_winner = False
     turn_count = 0
 
-    while not has_won:
+    while not is_there_a_winner:
         turn_count += 1
-        has_won, stats, players = game_turn(players, stats)
+        is_there_a_winner, stats, players = game_turn(players, stats)
 
     players = manageplayers.players_rank(players)
     stats = scoring.compute_game_stats(players, stats, turn_count)
