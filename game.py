@@ -140,7 +140,7 @@ def show_stats(players, game_stats, total_turns_game):
 
 # Manage Game
 def play():
-    players = manageplayers.manage_players()
+    players = manageplayers.init_players()
     stats = scoring.game_stats()
     has_won = False
     turn_count = 0
