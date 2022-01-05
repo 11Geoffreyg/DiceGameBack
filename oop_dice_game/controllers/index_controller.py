@@ -10,7 +10,7 @@ def game_controller():
     }
 
 
-def setting_controller():
+def settings_controller():
     return {
         "settings": "Voici le rendu #2"
     }
