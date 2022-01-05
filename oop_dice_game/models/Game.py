@@ -28,4 +28,17 @@ class Game:
     def turn_count(self, value):
         self._turn_count = value
 
+    def return_state(self):
+        return {
+            'players': self._players,
+            'turn_count': self._turn_count,
+            'total_rolls_game': self._total_rolls_game,
+            'total_lost_points': self._total_lost_points,
+            'total_no_point_turns': self._total_no_point_turns,
+            'total_score_game': self._total_score_game,
+            'winner': self._winner,
+            'settings': self._settings,
+            'stats': self._stats
+        }
+
 

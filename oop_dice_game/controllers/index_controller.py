@@ -1,13 +1,15 @@
+from models.Game import Game
+import json
+
+
 def index_controller():
-    return {
-        "index": "Voici le rendu #3"
-    }
+    return Game()
 
 
 def game_controller():
-    return {
-        "game": "Voici le rendu #1"
-    }
+    # changes performed to object
+    game = Game()
+    return json.dumps(game.return_state())
 
 
 def settings_controller():
