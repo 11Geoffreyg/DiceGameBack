@@ -3,7 +3,7 @@ import json
 
 
 def index_controller():
-    return Game()
+    return json.dumps(Game().return_state())
 
 
 def game_controller():
