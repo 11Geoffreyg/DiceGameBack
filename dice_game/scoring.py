@@ -104,4 +104,3 @@ def compute_game_stats(players, stats, total_turns_game):
     stats['mean_non_scoring_turn'] = round((total_lost_points / stats['total_no_points_turn']), 2) if stats['total_no_points_turn'] else 0
 
     return stats
-

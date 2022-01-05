@@ -1,10 +1,10 @@
-def manage_players():
-    player_count = int(input('How many players ?'))
+def init_players():
+    player_count = int(input('How many players ? : '))
     player_list = {}
     nb_player = 1
 
     for n in range(player_count):
-        name = input('Player ' + str(nb_player) + ' what is your name ?')
+        name = input('Player ' + str(nb_player) + ' what is your name ? : ')
         player_list[nb_player - 1] = {
             'name': name,
             'score': 0,
@@ -24,11 +24,11 @@ def does_player_continue(can_play):
     if not can_play:
         return False
 
-    wanna_play = input('Do you want to continue ? (y/n)')
+    wanna_play = input('Do you want to continue ? (y/n) : ')
     while wanna_play != 'y' and wanna_play != 'n':
-        wanna_play = input('Do you want to continue ? (y/n)')
+        wanna_play = input('Do you want to continue ? (y/n) : ')
 
-    return True if wanna_play == "y" else False
+    return wanna_play == "y"
 
 
 def players_rank(players):
