@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./oop_dice_game"
+    ]
+}
