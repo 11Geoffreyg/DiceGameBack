@@ -6,6 +6,8 @@ class Player:
         self._lost_point = 0
         self._roll_count = 0
         self._full_roll_count = 0
+        self._no_point_turn = 0
+        self._has_won = False
 
     @property
     def name(self) -> str:
@@ -23,7 +25,6 @@ class Player:
     def score(self, value):
         self._score = value
 
-
     @property
     def bonus_count(self) -> int:
         return self._score
@@ -31,7 +32,6 @@ class Player:
     @bonus_count.setter   
     def bonus_count(self, value):
         self._bonus_count = value
-
 
     @property
     def lost_points(self) -> int:
@@ -41,7 +41,6 @@ class Player:
     def lost_points(self, value):
         self._lost_points = value
 
-
     @property
     def roll_count(self) -> int:
         return self._roll_count
@@ -49,7 +48,6 @@ class Player:
     @roll_count.setter   
     def roll_count(self, value):
         self._roll_count = value
-    
 
     @property
     def full_roll_count(self) -> int:
@@ -57,4 +55,20 @@ class Player:
 
     @full_roll_count.setter   
     def full_roll_count(self, value):
-        self._full_roll_count = value   
+        self._full_roll_count = value
+
+    @property
+    def no_point_turn(self) -> int:
+        return self._no_point_turn
+
+    @no_point_turn.setter
+    def no_point_turn(self, value):
+        self._no_point_turn = value
+
+    @property
+    def has_won(self) -> bool:
+        return self._has_won
+
+    @no_point_turn.setter
+    def has_won(self, value):
+        self._has_won = value
