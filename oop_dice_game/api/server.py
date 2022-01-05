@@ -1,8 +1,5 @@
-import os.path
-from urllib.parse import urlparse
-from http.server import HTTPServer, SimpleHTTPRequestHandler, BaseHTTPRequestHandler
+from http.server import HTTPServer
 from .Request import Request
-import requests
 
 
 class Server:
@@ -20,9 +17,6 @@ class Server:
 
     def run(self):
         try:
-            resp = requests.get('https://thatcopy.pw/catapi/rest/')
-            print(resp.url)
-            print(urlparse(resp.url).path)
             self._http_server()
         except KeyboardInterrupt:
             self._server.server_close()
